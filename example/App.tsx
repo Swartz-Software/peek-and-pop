@@ -7,11 +7,7 @@ class App extends React.Component {
     return (
       <View style={styles.container}>
         <PeekAndPop
-          renderPreview={() => (
-            <View
-              style={{ width: 100, height: 100, backgroundColor: 'blue' }}
-            />
-          )}
+          renderPreview={() => <View style={styles.preview} />}
           onPeek={() => console.log('onPeek')}
           onPop={() => console.warn('pop')}
           onDisappear={() => console.log('onDisappear')}
@@ -49,13 +45,7 @@ class App extends React.Component {
             },
           ]}
         >
-          <View
-            style={{
-              backgroundColor: 'red',
-              width: 130,
-              height: 130,
-            }}
-          />
+          <View style={styles.innerView} />
         </PeekAndPop>
       </View>
     );
@@ -69,7 +59,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  tabbar: {
+  innerView: {
+    backgroundColor: 'red',
+    width: 130,
+    height: 130,
+  },
+  preview: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'blue',
+  },
+  tabBar: {
     alignSelf: 'stretch',
     flexDirection: 'row',
     justifyContent: 'space-around',

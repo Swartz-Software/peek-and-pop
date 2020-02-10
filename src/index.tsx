@@ -7,6 +7,7 @@ import {
   ViewStyle,
   StyleProp,
   ViewProps,
+  StyleSheet,
 } from 'react-native';
 
 type PreviewAction =
@@ -29,7 +30,7 @@ type PreviewAction =
 
 type MappedAction = (() => void) | undefined;
 
-type TraveresedAction =
+type TraversedAction =
   | {
       type: 'normal';
       selected?: boolean;
@@ -44,10 +45,10 @@ type TraveresedAction =
   | {
       type: 'group';
       label: string;
-      actions: TraveresedAction[];
+      actions: TraversedAction[];
     };
 
-type NativePeekAndPopleViewRef = {
+type NativePeekAndPopViewRef = {
   setNativeProps(props: { childRef: null | number }): void;
 };
 
@@ -64,20 +65,20 @@ type Props = ViewProps & {
 
 type State = {
   visible: boolean;
-  traversedActions: TraveresedAction[];
+  traversedActions: TraversedAction[];
   mappedActions: MappedAction[];
 };
 
 const { width, height } = Dimensions.get('window');
 
-export const NativePeekAndPopleView: React.ComponentType<{
-  ref: React.RefObject<NativePeekAndPopleViewRef>;
+export const NativePeekAndPopView: React.ComponentType<{
+  ref: React.RefObject<NativePeekAndPopViewRef>;
   style: StyleProp<ViewStyle>;
   onPeek?: () => void;
   onPop?: () => void;
   onDisappear?: () => void;
   onAction: (event: ActionEvent) => void;
-  previewActions: TraveresedAction[];
+  previewActions: TraversedAction[];
   children: React.ReactNode;
 }> = requireNativeComponent('PeekAndPop');
 
@@ -85,7 +86,7 @@ const traverseActions = (
   actions: PreviewAction[],
   actionsMap: MappedAction[]
 ) => {
-  const traversedAction: TraveresedAction[] = [];
+  const traversedAction: TraversedAction[] = [];
 
   actions.forEach(currentAction => {
     if (currentAction.type === 'group') {
@@ -100,7 +101,7 @@ const traverseActions = (
       // @ts-ignore
       clonedAction._key = actionsMap.length;
       actionsMap.push(onPress);
-      traversedAction.push(clonedAction as TraveresedAction);
+      traversedAction.push(clonedAction as TraversedAction);
     }
   });
   return traversedAction;
@@ -125,7 +126,7 @@ export default class PeekableView extends React.Component<Props, State> {
     mappedActions: [],
   };
 
-  preview = React.createRef<NativePeekAndPopleViewRef>();
+  preview = React.createRef<NativePeekAndPopViewRef>();
   sourceView = React.createRef<View>();
 
   componentDidMount() {
@@ -171,9 +172,9 @@ export default class PeekableView extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <View {...rest} ref={this.sourceView}>
-          <NativePeekAndPopleView
+          <NativePeekAndPopView
             // Renders nothing and inside view bound to the screen used by controller
-            style={{ width: 0, height: 0 }}
+            style={styles.peekAndPopView}
             onDisappear={this.onDisappear}
             onPeek={this.onPeek}
             onPop={onPop}
@@ -184,10 +185,17 @@ export default class PeekableView extends React.Component<Props, State> {
             <View style={{ width, height }}>
               {this.state.visible ? renderPreview() : null}
             </View>
-          </NativePeekAndPopleView>
+          </NativePeekAndPopView>
           {children}
         </View>
       </React.Fragment>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  peekAndPopView: {
+    width: 0,
+    height: 0,
+  },
+});

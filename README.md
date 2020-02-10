@@ -115,7 +115,7 @@ Label text for the button.
 
 #### `type`
 
-`normal` or `group` (defaults to `normal`). Controls whether the button has sub-actions.
+`normal`, `group`, or `destructive` (defaults to `normal`). Controls whether the button has sub-actions.
 
 #### `selected`
 
